@@ -1,0 +1,22 @@
+From: security-alerts@internal-soc.org
+To: analyst@internal-soc.org
+Subject: CRITICAL: Phishing Alert - Compromised Credentials
+Date: Fri, 03 Jul 2026 18:00:00 +0530
+Message-ID: <alert-123456@internal-soc.org>
+Authentication-Results: spf=pass (sender IP is 10.0.0.5) dkim=pass dmarc=pass
+Received: from mail-gateway.internal-soc.org (10.0.0.5) by mail-server.internal-soc.org with SMTP; Fri, 03 Jul 2026 18:00:00 +0530
+Received: from external-hop.net (203.0.113.50) by mail-gateway.internal-soc.org with SMTP; Fri, 03 Jul 2026 17:59:50 +0530
+
+Hello Team,
+
+We have detected a phishing email targeting several users. Please review the following details immediately.
+
+Sender IP: 198.51.100.42
+Malicious Domain: bad-infrastructure.net
+Malicious Link: http://bad-infrastructure.net/login/update-credentials.php
+Attached File Hash (SHA256): e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+Please triage this report and generate the final incident report.
+
+Regards,
+SOC Automated Alerts

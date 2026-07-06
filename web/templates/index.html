@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security Triager</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f121d;
+            --bg-card: rgba(22, 28, 45, 0.7);
+            --bg-card-hover: rgba(28, 36, 58, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --critical: #8b5cf6;
+            --font-main: 'Inter', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ── Header ── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1.5rem;
+        }
+
+        .logo-section h1 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+
+        /* ── Layout Grid ── */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Cards & Glassmorphism ── */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 12px 40px 0 rgba(99, 102, 241, 0.08);
+        }
+
+        .card-title {
+            font-family: var(--font-title);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.75rem;
+        }
+
+        /* ── Sidebar (Skills) ── */
+        .skills-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .skill-item:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .skill-version {
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+
+        .skill-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .skill-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+        }
+
+        .tool-tag {
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+
+        /* ── Main Area: Drop Zone ── */
+        .drop-zone {
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.02);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .drop-zone.dragover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .drop-zone-icon {
+            width: 64px;
+            height: 64px;
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone:hover .drop-zone-icon {
+            transform: translateY(-5px);
+            background: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .drop-zone-text h3 {
+            font-family: var(--font-title);
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .drop-zone-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .btn-browse {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 550;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .btn-browse:hover {
+            background: #5053e4;
+            transform: translateY(-1px);
+        }
+
+        /* ── Pipeline Stepper ── */
+        .pipeline-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            font-weight: 550;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .step-item.active .step-circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .step-item.active .step-label {
+            color: white;
+            font-weight: 600;
+        }
+
+        .step-item.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .step-item.completed .step-label {
+            color: var(--success);
+        }
+
+        /* ── Tabs for Results ── */
+        .results-panel {
+            display: none;
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            font-weight: 550;
+            font-size: 0.95rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* ── EML Headers Grid ── */
+        .headers-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .header-value {
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+        }
+
+        /* Authentication badging */
+        .auth-badges {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .auth-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-pass {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .badge-fail {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        /* Received Hop Timeline */
+        .hop-timeline {
+            margin-top: 1.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hop-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .hop-item::before {
+            content: '';
+            position: absolute;
+            left: -23px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .hop-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .hop-title {
+            font-weight: 550;
+            font-size: 0.9rem;
+        }
+
+        .hop-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.1rem;
+        }
+
+        /* ── IOC Chips ── */
+        .ioc-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .ioc-section-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .ioc-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .ioc-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chip-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 0.1rem 0.3rem;
+            border-radius: 4px;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+        }
+
+        /* ── Enrichment Table ── */
+        .threat-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .threat-table th, .threat-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .threat-table th {
+            color: var(--text-secondary);
+            font-weight: 550;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .threat-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        /* Triage Markdown styling */
+        .markdown-rendered {
+            color: #d1d5db;
+        }
+
+        .markdown-rendered h1, .markdown-rendered h2, .markdown-rendered h3 {
+            font-family: var(--font-title);
+            color: white;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .markdown-rendered h1 { font-size: 1.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; }
+        .markdown-rendered h2 { font-size: 1.4rem; }
+        .markdown-rendered h3 { font-size: 1.15rem; }
+
+        .markdown-rendered p {
+            margin-bottom: 1rem;
+        }
+
+        .markdown-rendered table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .markdown-rendered th, .markdown-rendered td {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+
+        .markdown-rendered th {
+            background: rgba(255,255,255,0.05);
+            font-weight: 600;
+        }
+
+        .markdown-rendered ul, .markdown-rendered ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .markdown-rendered li {
+            margin-bottom: 0.25rem;
+        }
+
+        .markdown-rendered blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+
+        /* Risk Badges */
+        .risk-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            display: inline-block;
+        }
+
+        .risk-critical { background: rgba(139, 92, 246, 0.15); color: var(--critical); border: 1px solid rgba(139, 92, 246, 0.3); }
+        .risk-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .risk-medium { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .risk-low { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .risk-unknown { background: rgba(156, 163, 175, 0.15); color: var(--text-secondary); border: 1px solid rgba(156, 163, 175, 0.3); }
+
+        /* History panel */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-artifact {
+            font-family: var(--font-mono);
+            word-break: break-all;
+            color: var(--text-primary);
+        }
+
+        /* ── Loading Overlay ── */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 18, 29, 0.85);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 4px solid rgba(99, 102, 241, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-family: var(--font-title);
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Action Buttons */
+        .report-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-section">
+                <h1>Cyber Security Triager</h1>
+                <p>Sequential Agentic Threat Analysis & EML Parser Dashboard</p>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span>MCP Server Connected</span>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Sidebar (Skills & History) -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Agentic Skills Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        <span>Active Agentic Skills</span>
+                    </div>
+                    <div class="skills-list" id="skills-container">
+                        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 1rem;">
+                            Loading active skills...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database History Card -->
+                <div class="card">
+                    <div class="card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Database History</span>
+                    </div>
+                    <div class="history-list" id="history-container">
+                        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 1rem;">
+                            No lookup history available.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Content Area -->
+            <div>
+                
+                <!-- Drop Zone / Upload Area -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="drop-zone" id="drop-zone">
+                        <div class="drop-zone-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                        </div>
+                        <div class="drop-zone-text">
+                            <h3>Upload .eml File</h3>
+                            <p>Drag and drop your EML format email file here, or click browse</p>
+                        </div>
+                        <input type="file" id="file-input" style="display: none;" accept=".eml">
+                        <button class="btn-browse" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                    </div>
+
+                    <!-- Pipeline Progress Stepper (Hidden by default, shown during analysis) -->
+                    <div class="pipeline-stepper" id="pipeline-stepper" style="display: none;">
+                        <div class="step-item" id="step-extract">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Artifact Extraction</div>
+                        </div>
+                        <div class="step-item" id="step-enrich">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Investigator (MCP Enrichment)</div>
+                        </div>
+                        <div class="step-item" id="step-report">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Reporter (AI Report)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Triage Results Panel -->
+                <div class="card results-panel" id="results-panel">
+                    
+                    <!-- Tabs Header -->
+                    <div class="results-tabs">
+                        <button class="tab-btn active" onclick="switchTab('tab-summary', this)">Triage Summary</button>
+                        <button class="tab-btn" onclick="switchTab('tab-headers', this)">Email Headers</button>
+                        <button class="tab-btn" onclick="switchTab('tab-iocs', this)">Extracted IOCs</button>
+                        <button class="tab-btn" onclick="switchTab('tab-report', this)">Triage Report</button>
+                    </div>
+
+                    <!-- TAB 1: Triage Summary -->
+                    <div id="tab-summary" class="tab-content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 style="font-family: var(--font-title); font-size: 1.5rem;">Automated Triaged Verdict</h2>
+                            <div id="summary-risk-badge"></div>
+                        </div>
+                        <div class="headers-grid" style="margin-bottom: 2rem;">
+                            <div class="header-label">Subject:</div>
+                            <div class="header-value" id="summary-subject" style="font-weight: 600;"></div>
+                            <div class="header-label">Sender:</div>
+                            <div class="header-value" id="summary-from"></div>
+                            <div class="header-label">Analyzed at:</div>
+                            <div class="header-value" id="summary-time"></div>
+                        </div>
+
+                        <div class="ioc-section">
+                            <h3 class="ioc-section-title">Enrichment Findings & Reputations</h3>
+                            <table class="threat-table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Artifact</th>
+                                        <th>Verdict</th>
+                                        <th>Risk Score</th>
+                                        <th>Vendor Flags / Age</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-reputation-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Email Headers -->
+                    <div id="tab-headers" class="tab-content" style="display: none;">
+                        <h3 class="ioc-section-title" style="margin-bottom: 1rem;">Full Email Header Analysis</h3>
+                        <div class="headers-grid" id="headers-detail-grid">
+                        </div>
+
+                        <h3 class="ioc-section-title" style="margin-top: 2rem; margin-bottom: 1rem;">Authentication Verifications</h3>
+                        <div class="auth-badges" id="auth-badges-container">
+                        </div>
+
+                        <h3 class="ioc-section-title" style="margin-top: 2rem; margin-bottom: 1rem;">Network Delivery Hops</h3>
+                        <div class="hop-timeline" id="hop-timeline-container">
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: Extracted IOCs -->
+                    <div id="tab-iocs" class="tab-content" style="display: none;">
+                        <div class="ioc-section">
+                            <h3 class="ioc-section-title">IP Addresses</h3>
+                            <div class="ioc-chips" id="iocs-ips"></div>
+                        </div>
+                        <div class="ioc-section" style="margin-top: 1.5rem;">
+                            <h3 class="ioc-section-title">Domains</h3>
+                            <div class="ioc-chips" id="iocs-domains"></div>
+                        </div>
+                        <div class="ioc-section" style="margin-top: 1.5rem;">
+                            <h3 class="ioc-section-title">URLs</h3>
+                            <div class="ioc-chips" id="iocs-urls"></div>
+                        </div>
+                        <div class="ioc-section" style="margin-top: 1.5rem;">
+                            <h3 class="ioc-section-title">File Hashes</h3>
+                            <div class="ioc-chips" id="iocs-hashes"></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: Triage Report -->
+                    <div id="tab-report" class="tab-content" style="display: none;">
+                        <div class="markdown-rendered" id="triage-report-content">
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn-action" onclick="copyReport()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                <span>Copy Report Markdown</span>
+                            </button>
+                            <button class="btn-action" onclick="downloadReport()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                                <span>Download Report</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">Running Extraction step...</div>
+    </div>
+
+    <script>
+        // Global raw report text
+        let rawReportMarkdown = "";
+
+        // On Load
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchSkills();
+            fetchHistory();
+            setupDragAndDrop();
+        });
+
+        // Fetch skills from Flask api
+        async function fetchSkills() {
+            try {
+                const response = await fetch("/api/skills");
+                const skills = await response.json();
+                const container = document.getElementById("skills-container");
+                container.innerHTML = "";
+                
+                for (const [key, skill] of Object.entries(skills)) {
+                    const skillItem = document.createElement("div");
+                    skillItem.className = "skill-item";
+                    
+                    const allowedToolsTags = skill.allowed_tools.map(tool => `<span class="tool-tag">${tool}</span>`).join(" ");
+                    
+                    skillItem.innerHTML = `
+                        <div class="skill-header">
+                            <span class="skill-name">${skill.name}</span>
+                            <span class="skill-version">v${skill.version}</span>
+                        </div>
+                        <div class="skill-desc">${skill.description}</div>
+                        ${skill.allowed_tools.length ? `<div class="skill-meta">${allowedToolsTags}</div>` : ''}
+                    `;
+                    
+                    // Toggle full details modal/alert on click if needed
+                    skillItem.addEventListener("click", () => {
+                        alert(`Skill: ${skill.name}\n\nWorkflow Details:\n${skill.details}`);
+                    });
+                    
+                    container.appendChild(skillItem);
+                }
+            } catch (err) {
+                console.error("Failed to load skills:", err);
+            }
+        }
+
+        // Fetch lookup history from database
+        async function fetchHistory() {
+            try {
+                const response = await fetch("/api/history");
+                const history = await response.json();
+                const container = document.getElementById("history-container");
+                container.innerHTML = "";
+                
+                if (history.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 1rem;">No history items found.</div>';
+                    return;
+                }
+                
+                history.forEach(item => {
+                    const hItem = document.createElement("div");
+                    hItem.className = "history-item";
+                    
+                    let resultVerdict = "unknown";
+                    try {
+                        const parsed = JSON.parse(item.results);
+                        if (parsed.owner) {
+                            resultVerdict = `VT malicious: ${parsed.malicious_votes || 0}`;
+                        } else if (parsed.whois_output) {
+                            resultVerdict = `WHOIS details retrieved`;
+                        } else if (parsed.error) {
+                            resultVerdict = `Error: ${parsed.error}`;
+                        }
+                    } catch (e) {
+                        resultVerdict = item.results;
+                    }
+                    
+                    hItem.innerHTML = `
+                        <div class="history-meta">
+                            <span>${item.ioc_type.toUpperCase()}</span>
+                            <span>${new Date(item.timestamp).toLocaleString()}</span>
+                        </div>
+                        <div class="history-artifact">${item.artifact}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${resultVerdict}</div>
+                    `;
+                    container.appendChild(hItem);
+                });
+            } catch (err) {
+                console.error("Failed to load history:", err);
+            }
+        }
+
+        // Setup Drag & Drop
+        function setupDragAndDrop() {
+            const dropZone = document.getElementById("drop-zone");
+            const fileInput = document.getElementById("file-input");
+
+            dropZone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZone.classList.add("dragover");
+            });
+
+            dropZone.addEventListener("dragleave", () => {
+                dropZone.classList.remove("dragover");
+            });
+
+            dropZone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                dropZone.classList.remove("dragover");
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    processFile(files[0]);
+                }
+            });
+
+            fileInput.addEventListener("change", (e) => {
+                if (e.target.files.length > 0) {
+                    processFile(e.target.files[0]);
+                }
+            });
+        }
+
+        // Process file sequential pipeline
+        async function processFile(file) {
+            const formData = new FormData();
+            formData.append("eml_file", file);
+
+            const overlay = document.getElementById("loading-overlay");
+            const text = document.getElementById("loading-text");
+            const stepper = document.getElementById("pipeline-stepper");
+            
+            // Show stepper
+            stepper.style.display = "flex";
+            resetStepper();
+
+            overlay.style.display = "flex";
+            
+            // Step 1: Extraction
+            updateStepperState("step-extract", "active");
+            text.innerText = "Extracting IOC artifacts and email body text...";
+            
+            try {
+                // We run the full pipeline in the Flask backend api
+                const response = await fetch("/api/triage", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || "Triage pipeline failed");
+                }
+                
+                // Step 2: Enrichment
+                updateStepperState("step-extract", "completed");
+                updateStepperState("step-enrich", "active");
+                text.innerText = "Running Investigator agent (MCP server queries)...";
+                await delay(1200); // UI visual transition delay
+                
+                // Step 3: Reporting
+                updateStepperState("step-enrich", "completed");
+                updateStepperState("step-report", "active");
+                text.innerText = "Reporter agent generating professional markdown report...";
+                await delay(1200);
+                
+                const result = await response.json();
+                
+                updateStepperState("step-report", "completed");
+                overlay.style.display = "none";
+                
+                // Populate results
+                renderTriageResults(result);
+                fetchHistory(); // refresh lookups
+                
+            } catch (err) {
+                overlay.style.display = "none";
+                alert("Error: " + err.message);
+                resetStepper();
+            }
+        }
+
+        function resetStepper() {
+            document.querySelectorAll(".step-item").forEach(el => {
+                el.className = "step-item";
+            });
+        }
+
+        function updateStepperState(id, state) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.className = `step-item ${state}`;
+            }
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Render Results Dashboard
+        function renderTriageResults(result) {
+            document.getElementById("results-panel").style.display = "block";
+            
+            // Render Verdict Badge
+            const verdictContainer = document.getElementById("summary-risk-badge");
+            const r = result.risk_level.toLowerCase();
+            verdictContainer.innerHTML = `<span class="risk-badge risk-${r}">${result.risk_level} RISK</span>`;
+            
+            // Summary Tab fields
+            document.getElementById("summary-subject").innerText = result.headers.subject || "(No Subject)";
+            document.getElementById("summary-from").innerText = result.headers.from || "(No Sender)";
+            document.getElementById("summary-time").innerText = new Date(result.timestamp).toLocaleString();
+            
+            // Render Summary table
+            const summaryBody = document.getElementById("summary-reputation-body");
+            summaryBody.innerHTML = "";
+            
+            if (result.enriched.length === 0) {
+                summaryBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">No indicators of compromise extracted.</td></tr>';
+            } else {
+                result.enriched.forEach(item => {
+                    const scoreVal = item.reputation.risk_score;
+                    let labelClass = "risk-low";
+                    if (scoreVal >= 10) labelClass = "risk-critical";
+                    else if (scoreVal >= 7) labelClass = "risk-high";
+                    else if (scoreVal >= 4) labelClass = "risk-medium";
+                    
+                    summaryBody.innerHTML += `
+                        <tr>
+                            <td><span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">${item.ioc_type}</span></td>
+                            <td><code style="font-family: var(--font-mono);">${item.artifact}</code></td>
+                            <td><span class="risk-badge ${labelClass}" style="font-size: 0.7rem; padding: 0.15rem 0.5rem;">${item.reputation.verdict}</span></td>
+                            <td><strong>${scoreVal}/10</strong></td>
+                            <td style="color: var(--text-secondary);">${item.reputation.flags || "N/A"} (${item.reputation.age || "N/A"})</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // Headers Tab
+            const headersGrid = document.getElementById("headers-detail-grid");
+            headersGrid.innerHTML = `
+                <div class="header-label">Subject:</div><div class="header-value">${result.headers.subject || 'N/A'}</div>
+                <div class="header-label">From:</div><div class="header-value">${result.headers.from || 'N/A'}</div>
+                <div class="header-label">To:</div><div class="header-value">${result.headers.to || 'N/A'}</div>
+                <div class="header-label">Date:</div><div class="header-value">${result.headers.date || 'N/A'}</div>
+                <div class="header-label">Return-Path:</div><div class="header-value">${result.headers.return_path || 'N/A'}</div>
+                <div class="header-label">Message-ID:</div><div class="header-value">${result.headers.message_id || 'N/A'}</div>
+                <div class="header-label">X-Mailer:</div><div class="header-value">${result.headers.x_mailer || 'N/A'}</div>
+            `;
+
+            // Auth badges
+            const authContainer = document.getElementById("auth-badges-container");
+            authContainer.innerHTML = "";
+            const auth = result.headers.authentication || {};
+            for (const [mechanism, verdict] of Object.entries(auth)) {
+                const isPass = verdict.toLowerCase() === "pass";
+                authContainer.innerHTML += `
+                    <div class="auth-item">
+                        <span style="text-transform: uppercase; font-weight: 550; font-size: 0.85rem;">${mechanism}:</span>
+                        <span class="${isPass ? 'badge-pass' : 'badge-fail'}">${verdict.toUpperCase()}</span>
+                    </div>
+                `;
+            }
+
+            // Hop timeline
+            const hopContainer = document.getElementById("hop-timeline-container");
+            hopContainer.innerHTML = "";
+            if (result.headers.received_hops.length === 0) {
+                hopContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">No hop routing information found.</div>';
+            } else {
+                result.headers.received_hops.forEach((hop, idx) => {
+                    hopContainer.innerHTML += `
+                        <div class="hop-item">
+                            <div class="hop-title">Hop ${idx + 1}: ${hop.by}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">From: ${hop.from}</div>
+                            <div class="hop-time">${hop.date}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            // IOC chips Tab
+            const populateChips = (containerId, items) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = "";
+                if (!items || items.length === 0) {
+                    container.innerHTML = '<span style="color: var(--text-secondary); font-size: 0.9rem;">None extracted</span>';
+                } else {
+                    items.forEach(it => {
+                        container.innerHTML += `<div class="ioc-chip">${it}</div>`;
+                    });
+                }
+            };
+            populateChips("iocs-ips", result.iocs.ips);
+            populateChips("iocs-domains", result.iocs.domains);
+            populateChips("iocs-urls", result.iocs.urls);
+            populateChips("iocs-hashes", result.iocs.hashes);
+
+            // Report Tab
+            rawReportMarkdown = result.report;
+            document.getElementById("triage-report-content").innerHTML = marked.parse(result.report);
+            
+            // Switch to Summary Tab
+            switchTab("tab-summary", document.querySelector(".tab-btn"));
+        }
+
+        // Tab Switching
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content").forEach(el => {
+                el.style.display = "none";
+            });
+            document.getElementById(tabId).style.display = "block";
+            
+            document.querySelectorAll(".tab-btn").forEach(el => {
+                el.classList.remove("active");
+            });
+            btn.classList.add("active");
+        }
+
+        // Action: Copy report
+        function copyReport() {
+            navigator.clipboard.writeText(rawReportMarkdown)
+                .then(() => alert("Triage report markdown copied to clipboard!"))
+                .catch(err => alert("Failed to copy: " + err));
+        }
+
+        // Action: Download report
+        function downloadReport() {
+            const blob = new Blob([rawReportMarkdown], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "triage_report.md";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 # Cyber Project
 
 ![Web App Screenshot](file:///C:/Users/Anik%20Kumar%20Bhushan/.gemini/antigravity-ide/brain/ec8c6aaa-9f4d-433a-9711-7f79d254f2c5/web_app_screenshot_1783394159860.png)
+=======
+# Cyber Security Triager - Sequential Agentic Threat Analysis
+
+## Track : Freestyle
+
+![Web App Screenshot]()
+>>>>>>> 76992cd63bc260e8f866e437e7768ae3c3d49b99
 
 ## Overview
 
@@ -37,6 +45,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
+<<<<<<< HEAD
 ## CI / CD Workflow
 
 The repository includes a GitHub Actions workflow that runs linting, tests, and builds the Docker image on every push.
@@ -65,6 +74,8 @@ jobs:
 ```
 
 ![CI Status](https://github.com/yourusername/yourrepo/actions/workflows/ci.yml/badge.svg)
+=======
+>>>>>>> 76992cd63bc260e8f866e437e7768ae3c3d49b99
 
 ## Contributing
 

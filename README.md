@@ -39,10 +39,10 @@ python -m venv venv
 source venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Run the web application locally ( or can deploy in Google Cloud )
+# Run the web application server locally ( or can deploy in Google Cloud )
 python web/app.py
 ```
-
+open your browser and access localhost with the mentioned port number.
 
 ## Contributing
 

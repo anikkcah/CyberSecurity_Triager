@@ -1,14 +1,9 @@
 <<<<<<< HEAD
-# Cyber Project
-
-![Web App Screenshot](web_app_screenshot.png)
-=======
 # Cyber Security Triager - Sequential Agentic Threat Analysis
 
 ## Track : Freestyle
 
-![Web App Screenshot]()
->>>>>>> 76992cd63bc260e8f866e437e7768ae3c3d49b99
+![Web App Screenshot](web_app_screenshot.png)
 
 ## Overview
 
@@ -45,37 +40,6 @@ pip install -r requirements.txt
 python main.py
 ```
 
-<<<<<<< HEAD
-## CI / CD Workflow
-
-The repository includes a GitHub Actions workflow that runs linting, tests, and builds the Docker image on every push.
-
-```yaml
-# .github/workflows/ci.yml
-name: CI
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Lint with flake8
-        run: flake8 .
-      - name: Run tests
-        run: pytest
-```
-
-![CI Status](https://github.com/yourusername/yourrepo/actions/workflows/ci.yml/badge.svg)
-=======
->>>>>>> 76992cd63bc260e8f866e437e7768ae3c3d49b99
 
 ## Contributing
 

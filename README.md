@@ -16,6 +16,10 @@
 
 The project emphasizes a premium user experience with smooth micro‑animations.
 
+## High Level Architecture Diagram
+
+![High Level Diagram] (high-level-architecture.png)
+
 ## Features
 
 - analyzing phishing emails and scams via modern dashboard. 

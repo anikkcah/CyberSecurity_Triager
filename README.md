@@ -8,20 +8,19 @@
 
 ## Overview
 
-**Cyber Project** is a modern web application built for cybersecurity triage and incident management. It provides a sleek, glassmorphism‑styled dashboard that presents real‑time alerts, threat intelligence, and actionable insights. The backend is powered by Python, leveraging a lightweight MCP server for handling API requests and a Flask‑based web interface.
+**Cyber Security Triager and e-mail Parser Project** is a modern web application built for cybersecurity triage and incident management. It provides a sleek, glassmorphism‑styled dashboard that presents real‑time alerts, threat intelligence, and actionable insights. The backend is powered by Python, leveraging a lightweight MCP server for handling API requests and a Flask‑based web interface.
 
-- **`main.py`** – Core entry point for initializing the application logic.
 - **`mcp_server.py`** – Implements the MCP (Modular Component Platform) server for extensible plugin handling.
 - **`web/app.py`** – Flask application that serves the UI and API endpoints.
 - **`web/templates/index.html`** – Jinja2 template for the responsive front‑end.
 
-The project emphasizes a premium user experience with smooth micro‑animations, dark mode support, and dynamic data visualizations.
+The project emphasizes a premium user experience with smooth micro‑animations.
 
 ## Features
 
-- Real‑time dashboard with threat alerts.
+- analyzing phishing emails and scams via modern dashboard. 
 - Modular plugin architecture via MCP.
-- Secure authentication and role‑based access.
+- downloadable threat reports and summaries.
 - Responsive design with modern CSS (glassmorphism, gradients, subtle hover effects).
 - Easy extensibility for adding new security data sources.
 
@@ -29,16 +28,16 @@ The project emphasizes a premium user experience with smooth micro‑animations,
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/cyber-project.git
-cd cyber-project
+git clone https://github.com/anikkcah/CyberSecurity_Triager.git
+cd CyberSecurity_Triager
 
 # Install dependencies (example using pip)
 python -m venv venv
 source venv/bin/activate  # on Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Run the application
-python main.py
+# Run the web application locally ( or can deploy in Google Cloud )
+python web/app.py
 ```
 
 

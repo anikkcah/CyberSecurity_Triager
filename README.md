@@ -3,7 +3,8 @@
 
 ## Track : Freestyle
 
-![Web App Screenshot](web_app_screenshot.png)
+![Web App Screenshot](cyber_sec_triager_one.png)
+![Web App Screenshot](cyber_sec_triager_two.png)
 
 ## Overview
 

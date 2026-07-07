@@ -51,3 +51,6 @@ Contributions are welcome! Please fork the repository, create a feature branch, 
 ## License
 
 This project is licensed under the MIT License – see the `LICENSE` file for details.
+
+## Note on API keys:
+ save the Virus Total API key as an environmental variable "VT_API_KEY" and use it in the project. 

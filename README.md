@@ -1,4 +1,4 @@
-# Cyber Security Triager - Sequential Agentic Threat Analysis
+# Cyber Security Triager - Sequential Agentic Threat Analysis & e-mail parser
 
 ## Track : Freestyle
 

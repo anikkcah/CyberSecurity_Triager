@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # Cyber Project
 
-![Web App Screenshot](file:///C:/Users/Anik%20Kumar%20Bhushan/.gemini/antigravity-ide/brain/ec8c6aaa-9f4d-433a-9711-7f79d254f2c5/web_app_screenshot_1783394159860.png)
+![Web App Screenshot](web_app_screenshot.png)
 =======
 # Cyber Security Triager - Sequential Agentic Threat Analysis
 

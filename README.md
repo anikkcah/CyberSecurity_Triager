@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Cyber Security Triager - Sequential Agentic Threat Analysis
 
 ## Track : Freestyle
